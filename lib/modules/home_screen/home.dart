@@ -1,14 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cutpro/shared/components/components.dart';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-
-import '../../shared/styles/colors.dart';
 import '../editing_screen/editing.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -102,15 +99,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     "edit_number": 2
                   });
-                  print('data is done ${image!.path}');
+                  // print('data is done ${image!.path}');
+                  // String x = '';
+                  // print('hello world 1');
+                  // var url = Uri.parse('https://pythonleader.com/analyze');
+                  // print('hello world 2');
+                  // Stream<http.Response> response = http.post(url, body: {
+                  //   "file": image!.path,
+                  //   "edit_number": "2"
+                  // }).asStream();
 
+                  // response.asBroadcastStream().listen((event) {
+                  //   print('hello world 3');
+                  //   print(event.bodyBytes); // prints the URL
+                  //   NavigateAndFinish(context, EditingScreen(event.bodyBytes));
+                  // });
+
+                  // final decodedResponse = json.decode(response.body);
+                  // response.statusCode == 200
+                  //     ? print('hello world')
+                  //     : print('hello khara');
                   Dio dio = Dio();
                   await dio
                       .post('https://pythonleader.com/analyze', data: data)
                       .then((value) {
                     print('done y hamouda success');
-                    print(value.data);
-                    // NavigateAndFinish(context, const EditingScreen());
+                    var x = value.data[0];
+
+                    print(x.toString());
+                    NavigateAndFinish(context, EditingScreen(x));
                   }).catchError((onError) {
                     print(onError);
                     print('done y hamouda  error');
