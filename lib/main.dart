@@ -1,10 +1,9 @@
-import 'dart:io';
 
 import 'package:cutpro/shared/network/remote/dio_helper.dart';
+import 'package:cutpro/shared/styles/themes.dart';
 import 'package:flutter/material.dart';
 
 import 'layouts/home_layout.dart';
-import 'modules/home_screen/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +19,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomeLayout(),
+      theme: MyThemeData.lightTheme,
+      darkTheme: MyThemeData.darkTheme,
     );
   }
 }
