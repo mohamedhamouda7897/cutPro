@@ -1,27 +1,30 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class EditingScreen extends StatelessWidget {
   String image;
 
   EditingScreen(this.image);
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
           actions: [
             IconButton(
                 onPressed: () async {
                   /// Download
                 },
-                icon: Icon(Icons.download))
+                icon: const Icon(Icons.download))
           ],
         ),
-        body: Image.network(
-          image,
-          fit: BoxFit.fill,
+        body: SizedBox(
+          width: double.infinity,
+          child: Image.network(
+            image,
+            fit: BoxFit.contain,
+          ),
         ));
   }
 
@@ -31,7 +34,7 @@ class EditingScreen extends StatelessWidget {
         builder: (con) {
           return AlertDialog(
             content: Row(
-              children: [
+              children: const [
                 CircularProgressIndicator(),
                 SizedBox(width: 10),
                 Text('Loading...'),

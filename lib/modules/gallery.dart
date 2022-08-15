@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_gallery/photo_gallery.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:video_player/video_player.dart';
+
+import '../shared/components/components.dart';
+import 'editing_screen/editing.dart';
 
 
 
@@ -51,12 +54,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Photo gallery example'),
-        ),
-        body: _loading
+    return  _loading
             ? const Center(
                 child: CircularProgressIndicator(),
               )
@@ -65,75 +63,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
                   double gridWidth = (constraints.maxWidth - 20) / 3;
                   double gridHeight = gridWidth + 33;
                   double ratio = gridWidth / gridHeight;
-                  return Container(
-                    padding: const EdgeInsets.all(5),
-                    child: GridView.count(
-                      childAspectRatio: ratio,
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 5.0,
-                      crossAxisSpacing: 5.0,
-                      children: <Widget>[
-                        ...?_albums?.map(
-                          (album) => GestureDetector(
-                            onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => AlbumPage(album))),
-                            child: Column(
-                              children: <Widget>[
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  child: Container(
-                                    color: Colors.grey[300],
-                                    height: 100,
-                                    width: gridWidth,
-                                    child: FadeInImage(
-                                      fit: BoxFit.cover,
-                                      placeholder:
-                                          MemoryImage(kTransparentImage),
-                                      image: AlbumThumbnailProvider(
-                                        albumId: album.id,
-                                        mediumType: album.mediumType,
-                                        highQuality: true,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  alignment: Alignment.topLeft,
-                                  padding: const EdgeInsets.only(left: 2.0),
-                                  child: Text(
-                                    album.name ?? "Unnamed Album",
-                                    maxLines: 1,
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(
-                                      height: 1.2,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  alignment: Alignment.topLeft,
-                                  padding: const EdgeInsets.only(left: 2.0),
-                                  child: Text(
-                                    album.count.toString(),
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(
-                                      height: 1.2,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                  return AlbumPage(_albums![0]);
                 },
-              ),
-      ),
-    );
+              );
   }
 }
 
@@ -161,19 +93,9 @@ class AlbumPageState extends State<AlbumPage> {
       _media = mediaPage.items;
     });
   }
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: Text(widget.album.name ?? "Unnamed Album"),
-        ),
-        body: GridView.count(
+    return  GridView.count(
           crossAxisCount: 3,
           mainAxisSpacing: 1.0,
           crossAxisSpacing: 1.0,
@@ -197,30 +119,28 @@ class AlbumPageState extends State<AlbumPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
+        );
   }
 }
 
-class ViewerPage extends StatelessWidget {
+class ViewerPage extends StatelessWidget  {
   final Medium medium;
-
-  const ViewerPage(Medium medium) : medium = medium;
-
+ 
+    ViewerPage(Medium medium) : medium = medium;
+ String? name; 
   @override
   Widget build(BuildContext context) {
     DateTime? date = medium.creationDate ?? medium.modifiedDate;
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.arrow_back_ios),
-          ),
-          title: date != null ? Text(date.toLocal().toString()) : null,
-        ),
-        body: Container(
+   
+  
+    medium.getFile().then((value) {
+      name=value.path;
+    },);
+
+    return  Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+         Container(
           alignment: Alignment.center,
           child: medium.mediumType == MediumType.image
               ? FadeInImage(
@@ -228,75 +148,98 @@ class ViewerPage extends StatelessWidget {
                   placeholder: MemoryImage(kTransparentImage),
                   image: PhotoProvider(mediumId: medium.id),
                 )
-              : VideoProvider(
-                  mediumId: medium.id,
-                ),
+              : Container()
         ),
-      ),
-    );
-  }
-}
-
-class VideoProvider extends StatefulWidget {
-  final String mediumId;
-
-  const VideoProvider({
-    required this.mediumId,
-  });
-
-  @override
-  _VideoProviderState createState() => _VideoProviderState();
-}
-
-class _VideoProviderState extends State<VideoProvider> {
-  VideoPlayerController? _controller;
-  File? _file;
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      initAsync();
-    });
-    super.initState();
-  }
-
-  Future<void> initAsync() async {
-    try {
-      _file = await PhotoGallery.getFile(mediumId: widget.mediumId);
-      _controller = VideoPlayerController.file(_file!);
-      _controller?.initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-    } catch (e) {
-      print("Failed : $e");
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _controller == null || !_controller!.value.isInitialized
-        ? Container()
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: _controller!.value.aspectRatio,
-                child: VideoPlayer(_controller!),
-              ),
-              FlatButton(
-                onPressed: () {
-                  setState(() {
-                    _controller!.value.isPlaying
-                        ? _controller!.pause()
-                        : _controller!.play();
+        Container(
+          margin: const EdgeInsets.only(bottom: 50.0,right: 22.0),
+          child: FloatingActionButton(onPressed: ()async{
+              FormData data = FormData.fromMap({
+                    "file": await MultipartFile.fromFile(
+                      name!,
+                      filename: medium.filename,
+                    ),
+                    "edit_number": 2
                   });
-                },
-                child: Icon(
-                  _controller!.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                ),
-              ),
-            ],
-          );
+
+                  Dio dio = Dio();
+                  await dio
+                      .post('https://pythonleader.com/analyze', data: data)
+                      .then((value) {
+                    print('done y hamouda success');
+                    var x = value.data[0];
+                    print(x.toString());
+                    NavigateAndFinish(context, EditingScreen(x));
+                  }).catchError((onError) {
+                    print(onError);
+                    print('done y hamouda  error');
+                  });
+          },child: const Icon(Icons.navigate_next_outlined),))
+      ],
+    );
+   
   }
 }
+
+// class VideoProvider extends StatefulWidget {
+//   final String mediumId;
+
+//   const VideoProvider({
+//     required this.mediumId,
+//   });
+
+//   @override
+//   _VideoProviderState createState() => _VideoProviderState();
+// }
+
+// class _VideoProviderState extends State<VideoProvider> {
+//   VideoPlayerController? _controller;
+//   File? _file;
+
+//   @override
+//   void initState() {
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       initAsync();
+//     });
+//     super.initState();
+//   }
+
+//   Future<void> initAsync() async {
+//     try {
+//       _file = await PhotoGallery.getFile(mediumId: widget.mediumId);
+//       _controller = VideoPlayerController.file(_file!);
+//       _controller?.initialize().then((_) {
+//         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+//         setState(() {});
+//       });
+//     } catch (e) {
+//       print("Failed : $e");
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return _controller == null || !_controller!.value.isInitialized
+//         ? Container()
+//         : Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: <Widget>[
+//               AspectRatio(
+//                 aspectRatio: _controller!.value.aspectRatio,
+//                 child: VideoPlayer(_controller!),
+//               ),
+//               FlatButton(
+//                 onPressed: () {
+//                   setState(() {
+//                     _controller!.value.isPlaying
+//                         ? _controller!.pause()
+//                         : _controller!.play();
+//                   });
+//                 },
+//                 child: Icon(
+//                   _controller!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+//                 ),
+//               ),
+//             ],
+//           );
+//   }
+// }
