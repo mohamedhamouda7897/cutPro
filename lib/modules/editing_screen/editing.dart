@@ -15,6 +15,12 @@ class EditingScreen extends StatelessWidget {
             IconButton(
                 onPressed: () async {
                   /// Download
+                  /// //click floating action button 
+                  /// 2- select image 
+                  /// open image automatic
+                  /// click floation action button to send to api 
+                  /// display image 
+                  /// 
                 },
                 icon: const Icon(Icons.download))
           ],
