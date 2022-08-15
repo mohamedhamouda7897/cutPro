@@ -22,7 +22,13 @@ class EditingScreen extends StatelessWidget {
                   /// display image 
                   /// 
                 },
-                icon: const Icon(Icons.download))
+                icon: const Icon(Icons.download)),
+
+                IconButton(
+                onPressed: () async {
+                  //share button
+                },
+                icon: const Icon(Icons.share)),
           ],
         ),
         body: SizedBox(
