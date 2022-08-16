@@ -16,7 +16,7 @@ class AppCubit extends Cubit<AppStates> {
 
   List<Widget> bottomScreens = [
     const CategoryScreen(),
-    const FeedScreen(),
+       const FeedScreen(),
     const ProfileScreen(),
   ];
 

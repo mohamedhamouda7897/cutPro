@@ -23,7 +23,6 @@ class EditingScreen extends StatelessWidget {
                   /// 
                 },
                 icon: const Icon(Icons.download)),
-
                 IconButton(
                 onPressed: () async {
                   //share button

@@ -46,6 +46,8 @@ dependencies:
   permission_handler: ^10.0.0
   transparent_image: ^2.0.0
   video_player: ^2.4.6
+  easy_scroll_animation: ^1.0.2
+
 
   simple_permissions:
    git:
