@@ -85,6 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.6"
+  downloads_path_provider_28:
+    dependency: "direct main"
+    description:
+      name: downloads_path_provider_28
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   easy_scroll_animation:
     dependency: "direct main"
     description:
@@ -331,15 +338,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.0.3"
-  simple_permissions:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "5ce9cbf70121292d57659ac04146bd2f4b250490"
-      url: "https://github.com/tq-systems/simple_permissions.git"
-    source: git
-    version: "1.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
