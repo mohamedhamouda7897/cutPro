@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cutpro/modules/editing_screen/cubit/editing_cubit.dart';
 import 'package:dio/dio.dart';
@@ -32,38 +33,7 @@ class _EditingScreenState extends State<EditingScreen> {
                 actions: [
                   IconButton(
                       onPressed: () async {
-                        Map<Permission, PermissionStatus> statuses = await [
-                          Permission.storage,
-                          //add more permission to request here.
-                        ].request();
-
-                        if (statuses[Permission.storage]!.isGranted) {
-                          var dir =
-                              await DownloadsPathProvider.downloadsDirectory;
-                          if (dir != null) {
-                            String savename = "banner.png";
-                            String savePath = dir.path + "/$savename";
-                            print(savePath);
-                            //output:  /storage/emulated/0/Download/banner.png
-
-                            try {
-                              await Dio().download(widget.image, savePath,
-                                  onReceiveProgress: (received, total) {
-                                if (total != -1) {
-                                  print((received / total * 100)
-                                          .toStringAsFixed(0) +
-                                      "%");
-                                  //you can build progressbar feature too
-                                }
-                              });
-                              print("Image is saved to download folder.");
-                            } on DioError catch (e) {
-                              print(e.message);
-                            }
-                          }
-                        } else {
-                          print("No permission to read and write.");
-                        }
+                        EditingCubit.get(context).downloadImage(widget.image);
                       },
                       icon: const Icon(Icons.download)),
                   IconButton(
@@ -73,12 +43,17 @@ class _EditingScreenState extends State<EditingScreen> {
                       icon: const Icon(Icons.share)),
                 ],
               ),
-              body: SizedBox(
-                width: double.infinity,
-                child: Image.network(
-                  widget.image,
-                  fit: BoxFit.contain,
-                ),
+              body: Column(
+                children: [
+                  Text(EditingCubit.get(context).load!.toString()),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Image.network(
+                      widget.image,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ],
               ));
         },
       ),
