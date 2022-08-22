@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../shared/components/components.dart';
+
 class EditingScreen extends StatefulWidget {
   String image;
 
@@ -23,9 +25,7 @@ class _EditingScreenState extends State<EditingScreen> {
     return BlocProvider(
       create: (context) => EditingCubit(),
       child: BlocConsumer<EditingCubit, EditingState>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
               backgroundColor: Colors.white,
@@ -38,7 +38,7 @@ class _EditingScreenState extends State<EditingScreen> {
                       icon: const Icon(Icons.download)),
                   IconButton(
                       onPressed: () async {
-                        //share button
+                        EditingCubit.get(context).shareFile();
                       },
                       icon: const Icon(Icons.share)),
                 ],
