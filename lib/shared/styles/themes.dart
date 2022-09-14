@@ -6,11 +6,11 @@ class MyThemeData {
 
   static final ThemeData lightTheme = ThemeData(
       primaryColor: primaryColor,
-      scaffoldBackgroundColor: primaryColor,
+      scaffoldBackgroundColor: SecondaryColor,
  
       appBarTheme: AppBarTheme(
         centerTitle: true,
-          color: Colors.transparent,
+          color: primaryColor,
           elevation: 0,
           iconTheme: IconThemeData(color: BlackColor)),
       textTheme: TextTheme(
@@ -25,55 +25,24 @@ class MyThemeData {
           fontWeight: FontWeight.w400,
         ),
         headline3: TextStyle(
-          fontSize: 25,
-          color: WhiteColor,
+          fontSize: 20,
+          color: BlackColor,
           fontWeight: FontWeight.w400,),
         subtitle1: TextStyle(
-          fontSize: 25,
+          fontSize: 15,
           color: BlackColor,
           fontWeight: FontWeight.w500,
         ),
         bodyText1: TextStyle(
-          fontSize: 20,
+          fontSize: 10,
           color: BlackColor,
           fontWeight: FontWeight.w500,
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: primaryColor,
-          selectedItemColor: BlackColor, unselectedItemColor: Colors.white
+          selectedItemColor: SecondaryColor, unselectedItemColor: BlackColor
       ),
       );
 
-  static final ThemeData darkTheme = ThemeData(
-      primaryColor: primaryColorDark,
-      appBarTheme: AppBarTheme(
-          centerTitle: true,
-          color: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(color: WhiteColor)),
-      textTheme: TextTheme(
-        headline1: TextStyle(
-          fontSize: 30,
-          color: WhiteColor,
-          fontWeight: FontWeight.w700,
-        ),
-        headline2: TextStyle(
-          fontSize: 25,
-          color: YellowColor,
-          fontWeight: FontWeight.w400,
-        ),
-        subtitle1: TextStyle(
-          fontSize: 25,
-          color: YellowColor,
-          fontWeight: FontWeight.w500,
-        ),
-        bodyText1: TextStyle(
-          fontSize: 20,
-          color: YellowColor,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          selectedItemColor: YellowColor, unselectedItemColor: Colors.white));
 }
